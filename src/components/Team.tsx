@@ -4,9 +4,24 @@ import React from 'react';
 const Team: React.FC = () => {
     // Mock data
     const team = [
-        { name: "Blake Bertuccelli-Booth", role: "Program Lead", affiliation: "UIC" },
-        { name: "Stefin Pasternak", role: "Program Lead", affiliation: "UIC" },
-        { name: "Mary Hubbard", role: "Advisor", affiliation: "WordPress" }
+        {
+            name: "Blake Bertuccelli-Booth",
+            role: "Program Lead",
+            affiliation: "UIC",
+            linkedin: "https://www.linkedin.com/in/blake1111/"
+        },
+        {
+            name: "Stefin Pasternak",
+            role: "Program Lead",
+            affiliation: "UIC",
+            linkedin: "https://www.linkedin.com/in/stephen-pasternak-11979b155"
+        },
+        {
+            name: "Mary Hubbard",
+            role: "Advisor",
+            affiliation: "WordPress",
+            linkedin: "https://www.linkedin.com/in/maryfhubbard/"
+        }
     ];
 
     return (
@@ -20,15 +35,29 @@ const Team: React.FC = () => {
                 <div className="flex flex-wrap justify-center gap-12 lg:gap-16">
                     {team.map((member, idx) => (
                         <div key={idx} className="group w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-3rem)] max-w-xs">
-                            <div className="aspect-[3/4] bg-zinc-900 rounded-xl mb-6 overflow-hidden relative border border-white/5">
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
-                                {/* Placeholder for actual image */}
-                                <div className="absolute inset-0 flex items-center justify-center text-zinc-800 font-bold text-7xl select-none group-hover:scale-110 transition-transform duration-500">
-                                    {member.name.charAt(0)}
+                            <a
+                                href={member.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                            >
+                                <div className="aspect-[3/4] bg-zinc-900 rounded-xl mb-6 overflow-hidden relative border border-white/5 group-hover:border-white/20 transition-colors">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
+                                    {/* Placeholder for actual image */}
+                                    <div className="absolute inset-0 flex items-center justify-center text-zinc-800 font-bold text-7xl select-none group-hover:scale-110 transition-transform duration-500">
+                                        {member.name.charAt(0)}
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                             <div className="text-center">
-                                <h3 className="text-xl font-bold text-white group-hover:text-gray-300 transition-colors">{member.name}</h3>
+                                <a
+                                    href={member.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block"
+                                >
+                                    <h3 className="text-xl font-bold text-white group-hover:text-gray-300 transition-colors">{member.name}</h3>
+                                </a>
                                 <div className="flex flex-col gap-1 mt-2">
                                     <p className="text-sm text-gray-400 font-medium tracking-wide uppercase">{member.role}</p>
                                     <p className="text-xs text-zinc-500 font-semibold tracking-widest uppercase">{member.affiliation}</p>
