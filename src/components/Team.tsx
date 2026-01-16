@@ -4,10 +4,9 @@ import React from 'react';
 const Team: React.FC = () => {
     // Mock data
     const team = [
-        { name: "Sarah Johnson", role: "Program Director" },
-        { name: "David Chen", role: "Lead Instructor" },
-        { name: "Amara Okeke", role: "Community Manager" },
-        { name: "Michael Smith", role: "Curriculum Developer" }
+        { name: "Blake Bertuccelli-Booth", role: "Program Lead" },
+        { name: "Stefin Pasternak", role: "AI Instruction" },
+        { name: "Mary Hubbard", role: "Operations" }
     ];
 
     return (
