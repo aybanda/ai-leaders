@@ -8,25 +8,35 @@ We hope this site becomes the AI Leaders learning platform, empowering the next 
 
 ## Getting Started
 
-To get started with this project locally, follow these steps:
+The fastest way to work on this project is using AI-powered development tools.
 
-1.  **Clone the repository:**
+### Option 1: AI-Powered Development (Recommended)
+
+This project is optimized for AI-assisted coding. We recommend using tools like **Google Antigravity** or **Claude Code**.
+
+1.  **Give Instructions**: Instead of memorizing terminal commands, simply tell your AI agent what you want to do:
+    - *"Set up this project and start the development server."*
+    - *"I want to add a new feature to the landing page."*
+    - *"Fix the alignment on the navigation bar."*
+2.  **Let the AI Handle the Rest**: Your AI agent will automatically install dependencies, run the development server, and manage file changes for you. 
+
+### Option 2: Manual Setup (Traditional)
+
+If you prefer using the command line:
+
+1.  **Setup**:
     ```bash
     git clone <repository-url>
     cd ai-leaders
-    ```
-
-2.  **Install dependencies:**
-    ```bash
     npm install
     ```
 
-3.  **Run the development server:**
+2.  **Run**:
     ```bash
     npm run dev
     ```
 
-    Open your browser and navigate to the URL shown in the terminal (usually `http://localhost:5173`).
+    Open `http://localhost:5173` in your browser.
 
 ## Contributing
 

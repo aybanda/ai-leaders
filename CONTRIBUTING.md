@@ -14,18 +14,18 @@ If you have an idea for a new feature or have found a bug that isn't already lis
 
 ### Your First Pull Request
 
-There are two primary ways to contribute: the traditional command-line approach and an AI-assisted approach using Google Antigravity.
+There are two primary ways to contribute: the traditional command-line approach and an AI-assisted approach using tools like Google Antigravity or Claude Code.
 
-#### Option 1: AI-Assisted Development (Recommended)
+#### Option 1: AI-Powered Development (Recommended)
 
-If you have access to [Google Antigravity](https://deepmind.google/technologies/gemini/), you can use it to streamline your contribution process. Antigravity can help you understand the codebase, generate tests, and even write the implementation for you.
+This project is built to be "AI-native." We recommend using **Google Antigravity** or **Claude Code** to streamline your contribution process. These tools can help you understand the codebase, generate tests, and write implementations for you.
 
-1. **Open the Project**: Open the repository in your IDE where Antigravity is enabled.
-2. **Describe Your Task**: Start a conversation with Antigravity. For example:
+1. **Open the Project**: Open the repository in your IDE where your AI agent (Antigravity, Claude Code, etc.) is enabled.
+2. **Describe Your Task**: Start a conversation with your agent. For example:
    - *"I want to fix issue #123. Can you help me find the relevant files?"*
    - *"I need to add a new 'About' section. Can you generate the component and style it with Tailwind?"*
-3. **Review and Iterate**: Review the code Antigravity generates. You can ask for modifications directly in the chat.
-4. **Finalize**: Once the changes are ready, you can ask Antigravity to help you create a branch and commit your changes.
+3. **Review and Iterate**: Review the code the AI generates. You can ask for modifications directly in the chat.
+4. **Finalize**: Once the changes are ready, you can ask the AI to help you create a branch and commit your changes.
 
 #### Option 2: Traditional Workflow (Command Line)
 
@@ -69,12 +69,10 @@ Regardless of the method used, once your changes are pushed to your fork:
 
 - **Code Quality**: Follow existing code patterns. We use TypeScript and React.
 - **Styling**: We use Tailwind CSS for styling.
-- **Testing**: Before submitting a PR, ensure the project builds and runs correctly:
-  ```bash
-  npm run dev
-  # and
-  npm run build
-  ```
+- **Testing**: Before submitting a PR, ensure the project builds and runs correctly. You can ask your AI agent to:
+  - *"Run the development server and check for errors."*
+  - *"Run the build command to ensure everything compiles."*
+  - (Manual commands: `npm run dev` or `npm run build`)
 
 ## Code of Conduct
 
