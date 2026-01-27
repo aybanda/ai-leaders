@@ -184,11 +184,6 @@ const ApplicationForm: React.FC = () => {
                         <p className="text-gray-300 mb-8 text-lg leading-relaxed">
                             You've demonstrated the curiosity, persistence, and willingness to improve that defines an AI Leader. We have recorded your submission and will notify you of next steps on March 1, 2026.
                         </p>
-                        <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
-                            <p className="text-green-400 text-sm font-bold">
-                                Next Update: March 1, 2026
-                            </p>
-                        </div>
                     </motion.div>
                 </div>
             </section>
