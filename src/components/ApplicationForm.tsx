@@ -1,24 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import type { TransparencyStage } from './EvaluationDimensions';
 import EvaluationDimensions from './EvaluationDimensions';
 import { analyzeApplication } from '../services/ai';
-import { sendNotification } from '../services/notifications';
+import { sendNotification, sendOrientationSelection } from '../services/notifications';
+
 
 const ApplicationForm: React.FC = () => {
     const [stage, setStage] = useState<TransparencyStage>(0);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [isSubmittingOrientation, setIsSubmittingOrientation] = useState(false);
+    const [orientationSelection, setOrientationSelection] = useState<string>('');
 
-    // Load attempts from local storage
-    const [attempts, setAttempts] = useState(() => {
-        const saved = localStorage.getItem('ai_leaders_attempts');
-        return saved ? parseInt(saved, 10) : 0;
-    });
 
-    useEffect(() => {
-        localStorage.setItem('ai_leaders_attempts', attempts.toString());
-    }, [attempts]);
+
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -91,11 +87,7 @@ const ApplicationForm: React.FC = () => {
             return;
         }
 
-        // 2. Rate Limiting Check
-        if (attempts >= 3) {
-            alert("You have reached the maximum number of attempts for this session.");
-            return;
-        }
+
 
         // 3. Captcha Check & Token Generation
         if (!executeRecaptcha) {
@@ -128,12 +120,10 @@ const ApplicationForm: React.FC = () => {
             // Calculate average score
             const averageScore = Object.values(newScores).reduce((a, b) => a + b, 0) / Object.values(newScores).length;
 
-            // Increment attempts
-            const newAttempts = attempts + 1;
-            setAttempts(newAttempts);
 
-            // Check for immediate pass (90%+)
-            if (averageScore >= 90) {
+
+            // Check for immediate pass (80%+)
+            if (averageScore >= 80) {
                 await sendNotification({
                     ...formData,
                     scores: newScores,
@@ -144,18 +134,10 @@ const ApplicationForm: React.FC = () => {
             }
 
             // Determine Stage based on persistence
-            if (newAttempts === 1) {
+            if (stage === 0) {
                 setStage(1); // Reveal Explanations
-            } else if (newAttempts === 2) {
+            } else if (stage === 1) {
                 setStage(2); // Reveal Full Rubric
-            } else if (newAttempts >= 3) {
-                // If they fail the 3rd try after guidance
-                await sendNotification({
-                    ...formData,
-                    scores: newScores,
-                    status: 'MAX_ATTEMPTS_REACHED'
-                });
-                // No need for alert, UI will handle it
             }
 
         } catch (error: any) {
@@ -166,7 +148,28 @@ const ApplicationForm: React.FC = () => {
         }
     };
 
-    if (stage === 3) {
+    const handleOrientationSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!orientationSelection) return;
+
+        setIsSubmittingOrientation(true);
+        try {
+            await sendOrientationSelection({
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                selection: orientationSelection
+            });
+            setStage(4);
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred. Please try again.");
+        } finally {
+            setIsSubmittingOrientation(false);
+        }
+    };
+
+    if (stage === 4) {
         return (
             <section id="apply" className="py-24 bg-zinc-950 min-h-[80vh] flex items-center justify-center">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
@@ -180,9 +183,11 @@ const ApplicationForm: React.FC = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
-                        <h2 className="text-3xl font-bold text-white mb-4">Application Submitted</h2>
+                        <h2 className="text-3xl font-bold text-white mb-4">Registration Confirmed</h2>
                         <p className="text-gray-300 mb-8 text-lg leading-relaxed">
-                            You've demonstrated the curiosity, persistence, and willingness to improve that defines an AI Leader. We have recorded your submission and will notify you of next steps on March 1, 2026.
+                            {orientationSelection === 'I cannot make either of those dates'
+                                ? "Thank you for letting us know. We will be in touch with alternative orientation options soon."
+                                : `We've confirmed your registration for the orientation on ${orientationSelection}. You will receive a calendar invitation shortly.`}
                         </p>
                     </motion.div>
                 </div>
@@ -190,32 +195,81 @@ const ApplicationForm: React.FC = () => {
         );
     }
 
-    if (attempts >= 3) {
+    if (stage === 3) {
         return (
             <section id="apply" className="py-24 bg-zinc-950 min-h-[80vh] flex items-center justify-center">
-                <div className="container mx-auto px-6 max-w-2xl text-center">
+                <div className="container mx-auto px-6 max-w-3xl">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-zinc-900/50 border border-indigo-500/30 p-12 rounded-2xl shadow-2xl backdrop-blur-sm"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-zinc-900/50 border border-green-500/30 p-10 md:p-12 rounded-3xl shadow-2xl backdrop-blur-md"
                     >
-                        <div className="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+                                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <h2 className="text-3xl font-bold text-white">Strong Candidate</h2>
                         </div>
-                        <h2 className="text-3xl font-bold text-white mb-4">Maximum Attempts Reached</h2>
-                        <p className="text-gray-300 mb-8 text-lg leading-relaxed">
-                            We value your effort and persistence. However, you have reached the maximum of 3 attempts for this session. We have recorded your final revision and will review it manually.
-                        </p>
-                        <p className="text-zinc-500 italic text-sm">
-                            Thank you for applying to AI Leaders.
-                        </p>
+
+                        <div className="space-y-6 text-gray-300 text-lg leading-relaxed mb-10">
+                            <p>
+                                Based on your responses, you've demonstrated the curiosity, persistence, and willingness to improve that defines an AI Leader. <strong>You are invited to register for an orientation.</strong>
+                            </p>
+                            <p className="text-sm border-l-2 border-white/10 pl-6 text-gray-400 italic">
+                                Orientation participants will be introduced to our program and invited to start their learning journey. From the initial cohort, the 40 strongest participants will be invited to participate in the Full Credential to create a portfolio that leads to WordPress living-wage job placement. This Full Credential opportunity is paid and designed to help learners who have demonstrated commitment to a career in technology to efficiently demonstrate the skills they need to earn a living wage job. Participants who successfully complete the Full Credential will earn a $1,000 honorarium.
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleOrientationSubmit} className="space-y-8">
+                            <div className="space-y-4">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Select an Orientation Date</h3>
+
+                                {[
+                                    'March 18 at 11 AM',
+                                    'March 19 at 6 PM',
+                                    'I cannot make either of those dates'
+                                ].map((option) => (
+                                    <label
+                                        key={option}
+                                        className={`flex items-center p-5 rounded-2xl border cursor-pointer transition-all ${orientationSelection === option
+                                            ? 'bg-green-500/10 border-green-500/50 text-white'
+                                            : 'bg-zinc-900/50 border-white/5 text-gray-400 hover:border-white/20'
+                                            }`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="orientation"
+                                            value={option}
+                                            checked={orientationSelection === option}
+                                            onChange={(e) => setOrientationSelection(e.target.value)}
+                                            className="sr-only"
+                                        />
+                                        <div className={`w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center ${orientationSelection === option ? 'border-green-400' : 'border-zinc-700'
+                                            }`}>
+                                            {orientationSelection === option && <div className="w-2.5 h-2.5 bg-green-400 rounded-full" />}
+                                        </div>
+                                        <span className="font-medium">{option}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={!orientationSelection || isSubmittingOrientation}
+                                className="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest text-xs"
+                            >
+                                {isSubmittingOrientation ? "Registering..." : "Confirm Orientation Registration"}
+                            </button>
+                        </form>
                     </motion.div>
                 </div>
             </section>
         );
     }
+
+
 
     return (
         <section id="apply" className="py-24 bg-zinc-950">
@@ -223,7 +277,7 @@ const ApplicationForm: React.FC = () => {
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Join the Program</h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed mb-10">
-                        Apply for AI Leaders. We'll notify all applicants of next steps on March 1, 2026.
+                        Apply for AI Leaders. The application system immediately informs you if you are a strong candidate. Strong candidates are invited to an orientation.
                     </p>
                 </div>
 
@@ -395,9 +449,6 @@ const ApplicationForm: React.FC = () => {
                                     <p className="text-xs text-zinc-600 font-mono">
                                         Protected by ReCAPTCHA v3
                                     </p>
-                                    <p className={`text-xs font-black uppercase tracking-widest ${attempts >= 2 ? 'text-red-500' : 'text-zinc-500'}`}>
-                                        Attempts Remaining: {3 - attempts}
-                                    </p>
                                 </div>
                                 {!import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
                                     <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-xl text-center">
@@ -414,7 +465,7 @@ const ApplicationForm: React.FC = () => {
                                 whileHover="hover"
                                 whileTap="tap"
                                 type="submit"
-                                disabled={isAnalyzing || attempts >= 3 || !executeRecaptcha}
+                                disabled={isAnalyzing || !executeRecaptcha}
                                 className="group relative w-full font-black py-5 rounded-2xl border border-white/10 mt-4 text-xs tracking-[0.2em] uppercase overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors duration-300 cursor-pointer"
                             >
                                 {/* 1. Pulsing Glow Layer */}

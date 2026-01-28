@@ -12,8 +12,17 @@ export interface NotificationData {
         motivation: number;
         experience: number;
     };
-    status: 'ACCEPTED' | 'MAX_ATTEMPTS_REACHED';
+    status: 'ACCEPTED';
 }
+
+
+export interface OrientationData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    selection: string;
+}
+
 
 export const sendNotification = async (data: NotificationData): Promise<boolean> => {
     const webhookUrl = import.meta.env.VITE_SLACK_WEBHOOK_URL;
@@ -30,7 +39,7 @@ export const sendNotification = async (data: NotificationData): Promise<boolean>
                     type: "header",
                     text: {
                         type: "plain_text",
-                        text: data.status === 'ACCEPTED' ? "🎉 New Qualified Applicant!" : "⚠️ Applicant Reached Max Attempts",
+                        text: "🎉 New Qualified Applicant!",
                         emoji: true
                     }
                 },
@@ -123,3 +132,62 @@ export const sendNotification = async (data: NotificationData): Promise<boolean>
         return false;
     }
 };
+
+export const sendOrientationSelection = async (data: OrientationData): Promise<boolean> => {
+    const webhookUrl = import.meta.env.VITE_SLACK_WEBHOOK_URL;
+
+    if (!webhookUrl) {
+        console.warn('Slack Webhook URL not configured (VITE_SLACK_WEBHOOK_URL)');
+        return false;
+    }
+
+    try {
+        const payload = {
+            blocks: [
+                {
+                    type: "header",
+                    text: {
+                        type: "plain_text",
+                        text: "📅 New Orientation Registration",
+                        emoji: true
+                    }
+                },
+                {
+                    type: "section",
+                    fields: [
+                        {
+                            type: "mrkdwn",
+                            text: `*Name:*\n${data.firstName} ${data.lastName}`
+                        },
+                        {
+                            type: "mrkdwn",
+                            text: `*Email:*\n${data.email}`
+                        }
+                    ]
+                },
+                {
+                    type: "section",
+                    text: {
+                        type: "mrkdwn",
+                        text: `*Orientation Selection:*\n${data.selection}`
+                    }
+                }
+            ]
+        };
+
+        await fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        return true;
+    } catch (error) {
+        console.error('Error sending orientation notification:', error);
+        return false;
+    }
+};
+

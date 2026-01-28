@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export type TransparencyStage = 0 | 1 | 2 | 3; // 0: Titles, 1: Explanations, 2: Full Rubric, 3: Success
+export type TransparencyStage = 0 | 1 | 2 | 3 | 4; // 0: Titles, 1: Explanations, 2: Full Rubric, 3: Orientation Selection, 4: Final Success
 
 interface EvaluationDimensionsProps {
     stage: TransparencyStage;
