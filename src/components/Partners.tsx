@@ -1,22 +1,54 @@
 
 import React from 'react';
+import uicLogo from '../assets/partner-uic.png';
+import wordpressLogo from '../assets/partner-wordpress.png';
+import latechLogo from '../assets/partner-latech.png';
+import ullLogo from '../assets/partner-ull.png';
 
 const Partners: React.FC = () => {
+    const partners = [
+        {
+            name: "University of Illinois Chicago",
+            logo: uicLogo,
+            url: "http://uic.edu/"
+        },
+        {
+            name: "WordPress",
+            logo: wordpressLogo,
+            url: "https://wordpress.org"
+        },
+        {
+            name: "Louisiana Tech University",
+            logo: latechLogo,
+            url: "https://www.latech.edu/"
+        },
+        {
+            name: "University of Louisiana at Lafayette",
+            logo: ullLogo,
+            url: "https://louisiana.edu/educate"
+        }
+    ];
+
     return (
         <section id="partners" className="py-24 bg-zinc-950 border-y border-white/5">
             <div className="container mx-auto px-6 text-center">
                 <p className="text-sm font-semibold tracking-widest text-gray-500 uppercase mb-12">AI Leaders Partners</p>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-                    {[
-                        "University of Illinois Chicago",
-                        "WordPress",
-                        "Louisiana Tech University",
-                        "University of Louisiana at Lafayette"
-                    ].map((name) => (
-                        <div key={name} className="h-24 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer group p-4">
-                            <span className="text-zinc-500 font-bold text-sm md:text-base group-hover:text-zinc-300 text-center">{name}</span>
-                        </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {partners.map((partner) => (
+                        <a
+                            key={partner.name}
+                            href={partner.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="h-32 bg-white/[0.02] border border-white/5 rounded-xl flex items-center justify-center hover:bg-white/5 hover:border-white/20 transition-all duration-300 group p-8"
+                        >
+                            <img
+                                src={partner.logo}
+                                alt={partner.name}
+                                className="max-h-full max-w-full w-auto object-contain opacity-30 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:saturate-[1.3] transition-all duration-500"
+                            />
+                        </a>
                     ))}
                 </div>
             </div>
@@ -25,3 +57,4 @@ const Partners: React.FC = () => {
 };
 
 export default Partners;
+
