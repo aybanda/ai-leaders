@@ -10,9 +10,8 @@ if (!API_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(API_KEY || '');
-// Use the 'gemini-flash-latest' alias to ensure we always use the current supported Flash model.
-// As of Jan 2026, this typically resolves to Gemini 3 Flash.
-const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+// Use Gemini 2.0 Flash Lite for analysis.
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
 export interface AssessmentResult {
     curiosity: number;
@@ -84,7 +83,7 @@ export const analyzeApplication = async (response: string): Promise<AssessmentRe
         }
 
         if (error.status === 404 || error.message?.includes('not found')) {
-            throw new Error("Gemini model 'gemini-1.5-flash' not found. This usually means your API Key is invalid or doesn't have access to this model.");
+            throw new Error("Gemini model 'gemini-2.0-flash-lite' not found. This usually means your API Key is invalid or doesn't have access to this model.");
         }
 
         if (error.status === 429) {

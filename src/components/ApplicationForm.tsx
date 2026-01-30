@@ -31,7 +31,6 @@ const ApplicationForm: React.FC = () => {
         email: '',
         linkedin: '',
         affiliation: '',
-        affiliationOther: '',
         response: ''
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -54,26 +53,23 @@ const ApplicationForm: React.FC = () => {
 
         // 1. Validation
         const newErrors: Record<string, string> = {};
-        if (!formData.firstName) newErrors.firstName = "First name is required";
-        if (!formData.lastName) newErrors.lastName = "Last name is required";
+        if (!formData.firstName) newErrors.firstName = "Please provide your first name.";
+        if (!formData.lastName) newErrors.lastName = "Please provide your last name.";
         if (!formData.email) {
-            newErrors.email = "Email is required";
+            newErrors.email = "Email address is required to contact you.";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Please enter a valid email";
+            newErrors.email = "Please enter a valid email address (e.g., name@example.com).";
         }
         if (!formData.linkedin) {
-            newErrors.linkedin = "LinkedIn profile is required";
+            newErrors.linkedin = "Your LinkedIn profile URL is required for verification.";
         } else if (!formData.linkedin.includes('linkedin.com/')) {
-            newErrors.linkedin = "Please enter a valid LinkedIn URL";
+            newErrors.linkedin = "Please enter a valid LinkedIn URL (must include linkedin.com).";
         }
-        if (!formData.affiliation) newErrors.affiliation = "Please select an affiliation";
-        if (formData.affiliation === 'Other' && !formData.affiliationOther) {
-            newErrors.affiliationOther = "Please specify your organization";
-        }
+        if (!formData.affiliation) newErrors.affiliation = "Please select your primary affiliation from the list.";
         if (!formData.response) {
-            newErrors.response = "Your response is required";
+            newErrors.response = "Please describe your projects and interest in the program.";
         } else if (formData.response.length < 50) {
-            newErrors.response = "Response is too short (min 50 chars)";
+            newErrors.response = "Your response is too brief. Please provide at least 50 characters to help us evaluate your candidacy.";
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -294,10 +290,17 @@ const ApplicationForm: React.FC = () => {
                                         id="firstName"
                                         value={formData.firstName}
                                         onChange={handleInputChange}
-                                        className={`w-full bg-zinc-900 border ${errors.firstName ? 'border-red-500' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
+                                        className={`w-full bg-zinc-900 border ${errors.firstName ? 'border-red-500 bg-red-500/5 ring-1 ring-red-500/50' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
                                         required
                                     />
-                                    {errors.firstName && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.firstName}</p>}
+                                    {errors.firstName && (
+                                        <div className="flex items-center gap-1.5 mt-2">
+                                            <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{errors.firstName}</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="space-y-3">
                                     <label htmlFor="lastName" className="text-xs font-black uppercase tracking-widest text-gray-500">Last Name</label>
@@ -306,10 +309,17 @@ const ApplicationForm: React.FC = () => {
                                         id="lastName"
                                         value={formData.lastName}
                                         onChange={handleInputChange}
-                                        className={`w-full bg-zinc-900 border ${errors.lastName ? 'border-red-500' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
+                                        className={`w-full bg-zinc-900 border ${errors.lastName ? 'border-red-500 bg-red-500/5 ring-1 ring-red-500/50' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
                                         required
                                     />
-                                    {errors.lastName && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.lastName}</p>}
+                                    {errors.lastName && (
+                                        <div className="flex items-center gap-1.5 mt-2">
+                                            <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{errors.lastName}</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -321,10 +331,17 @@ const ApplicationForm: React.FC = () => {
                                         id="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        className={`w-full bg-zinc-900 border ${errors.email ? 'border-red-500' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
+                                        className={`w-full bg-zinc-900 border ${errors.email ? 'border-red-500 bg-red-500/5 ring-1 ring-red-500/50' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
                                         required
                                     />
-                                    {errors.email && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.email}</p>}
+                                    {errors.email && (
+                                        <div className="flex items-center gap-1.5 mt-2">
+                                            <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{errors.email}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-3">
@@ -335,10 +352,17 @@ const ApplicationForm: React.FC = () => {
                                         value={formData.linkedin}
                                         onChange={handleInputChange}
                                         placeholder="https://linkedin.com/in/yourprofile"
-                                        className={`w-full bg-zinc-900 border ${errors.linkedin ? 'border-red-500' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
+                                        className={`w-full bg-zinc-900 border ${errors.linkedin ? 'border-red-500 bg-red-500/5 ring-1 ring-red-500/50' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
                                         required
                                     />
-                                    {errors.linkedin && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.linkedin}</p>}
+                                    {errors.linkedin && (
+                                        <div className="flex items-center gap-1.5 mt-2">
+                                            <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{errors.linkedin}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-3">
@@ -348,14 +372,14 @@ const ApplicationForm: React.FC = () => {
                                             id="affiliation"
                                             value={formData.affiliation}
                                             onChange={handleInputChange}
-                                            className={`w-full bg-zinc-900 border ${errors.affiliation ? 'border-red-500' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium appearance-none cursor-pointer pr-12 hover:border-zinc-700`}
+                                            className={`w-full bg-zinc-900 border ${errors.affiliation ? 'border-red-500 bg-red-500/5 ring-1 ring-red-500/50' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium appearance-none cursor-pointer pr-12 hover:border-zinc-700`}
                                             required
                                         >
                                             <option value="" disabled>Select your affiliation</option>
                                             <option value="University of Illinois Chicago">University of Illinois Chicago</option>
                                             <option value="University of Louisiana at Lafayette">University of Louisiana at Lafayette</option>
                                             <option value="Louisiana Tech University">Louisiana Tech University</option>
-                                            <option value="Other">Other</option>
+                                            <option value="None">None</option>
                                         </select>
                                         <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500 group-hover:text-zinc-300 transition-colors">
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -363,32 +387,16 @@ const ApplicationForm: React.FC = () => {
                                             </svg>
                                         </div>
                                     </div>
-                                    {errors.affiliation && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.affiliation}</p>}
+                                    {errors.affiliation && (
+                                        <div className="flex items-center gap-1.5 mt-2">
+                                            <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{errors.affiliation}</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-
-                            <AnimatePresence>
-                                {formData.affiliation === 'Other' && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="space-y-3"
-                                    >
-                                        <label htmlFor="affiliationOther" className="text-xs font-black uppercase tracking-widest text-gray-500">Please Specify</label>
-                                        <input
-                                            type="text"
-                                            id="affiliationOther"
-                                            value={formData.affiliationOther}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter your organization or university"
-                                            className={`w-full bg-zinc-900 border ${errors.affiliationOther ? 'border-red-500' : 'border-zinc-800'} rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-medium`}
-                                            required
-                                        />
-                                        {errors.affiliationOther && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.affiliationOther}</p>}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
 
                             <div className="space-y-6 mt-6">
                                 <div className="space-y-4">
@@ -410,11 +418,18 @@ const ApplicationForm: React.FC = () => {
                                     value={formData.response}
                                     onChange={handleInputChange}
                                     rows={12}
-                                    className={`w-full bg-zinc-950 border ${errors.response ? 'border-red-500' : 'border-zinc-800'} rounded-2xl px-6 py-6 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-mono text-sm leading-relaxed`}
+                                    className={`w-full bg-zinc-950 border ${errors.response ? 'border-red-500 bg-red-500/5 ring-1 ring-red-500/50' : 'border-zinc-800'} rounded-2xl px-6 py-6 text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all font-mono text-sm leading-relaxed`}
                                     placeholder="Write your response here... feel free to use AI to help you draft and refine it."
                                     required
                                 ></textarea>
-                                {errors.response && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mt-1">{errors.response}</p>}
+                                {errors.response && (
+                                    <div className="flex items-center gap-1.5 mt-2">
+                                        <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-10a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                        </svg>
+                                        <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{errors.response}</p>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Feedback Area */}
@@ -444,20 +459,38 @@ const ApplicationForm: React.FC = () => {
                             </AnimatePresence>
 
                             {/* Attempts & Status */}
-                            <div className="mt-8 space-y-4">
-                                <div className="flex justify-between items-center px-2">
-                                    <p className="text-xs text-zinc-600 font-mono">
-                                        Protected by ReCAPTCHA v3
-                                    </p>
-                                </div>
-                                {!import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
-                                    <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-xl text-center">
-                                        <p className="text-red-400 text-xs font-bold mb-1">Configuration Error</p>
-                                        <p className="text-gray-400 text-[10px] leading-relaxed">
-                                            ReCAPTCHA Site Key is missing. Check your <code className="text-white">.env</code> file.
-                                        </p>
+                            <div className="mt-8 space-y-10">
+                                {Object.keys(errors).length > 0 && (
+                                    <div className="p-4 bg-red-900/10 border border-red-500/20 rounded-xl flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                                            <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-red-500 text-xs font-bold uppercase tracking-widest">Action Required</p>
+                                            <p className="text-gray-400 text-[10px] leading-relaxed">
+                                                Please correct the {Object.keys(errors).length} highlighted field{Object.keys(errors).length === 1 ? '' : 's'} above to continue.
+                                            </p>
+                                        </div>
                                     </div>
                                 )}
+
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center px-2">
+                                        <p className="text-xs text-zinc-600 font-mono">
+                                            Protected by ReCAPTCHA v3
+                                        </p>
+                                    </div>
+                                    {!import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
+                                        <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-xl text-center">
+                                            <p className="text-red-400 text-xs font-bold mb-1">Configuration Error</p>
+                                            <p className="text-gray-400 text-[10px] leading-relaxed">
+                                                ReCAPTCHA Site Key is missing. Check your <code className="text-white">.env</code> file.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <motion.button
@@ -540,8 +573,8 @@ const ApplicationForm: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </div >
+        </section >
     );
 };
 

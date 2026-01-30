@@ -4,7 +4,6 @@ export interface NotificationData {
     email: string;
     linkedin: string;
     affiliation: string;
-    affiliationOther?: string;
     response: string;
     scores: {
         curiosity: number;
@@ -61,7 +60,7 @@ export const sendNotification = async (data: NotificationData): Promise<boolean>
                     fields: [
                         {
                             type: "mrkdwn",
-                            text: `*Affiliation:*\n${data.affiliation === 'Other' ? data.affiliationOther : data.affiliation}`
+                            text: `*Affiliation:*\n${data.affiliation}`
                         },
                         {
                             type: "mrkdwn",
