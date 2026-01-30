@@ -52,6 +52,23 @@ Return ONLY a valid JSON object with the following structure, no markdown format
 `;
 
 export const analyzeApplication = async (response: string): Promise<AssessmentResult> => {
+    if (import.meta.env.VITE_DISABLE_GEMINI === 'true') {
+        console.info('Gemini AI analysis is disabled (VITE_DISABLE_GEMINI=true). Returning mock response.');
+        // Return a mock "passing" response for testing
+        return {
+            curiosity: 85,
+            clarity: 90,
+            motivation: 88,
+            experience: 82,
+            feedback: {
+                curiosity: "Mock curiosity feedback.",
+                clarity: "Mock clarity feedback.",
+                motivation: "Mock motivation feedback.",
+                experience: "Mock experience feedback."
+            }
+        };
+    }
+
     if (!API_KEY) {
         throw new Error("Gemini API Key is missing. Please check your .env configuration.");
     }

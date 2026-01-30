@@ -48,6 +48,9 @@ jobs:
           VITE_CAMPAIGN_MONITOR_API_KEY: ${{ secrets.VITE_CAMPAIGN_MONITOR_API_KEY }}
           VITE_CAMPAIGN_MONITOR_CLIENT_ID: ${{ secrets.VITE_CAMPAIGN_MONITOR_CLIENT_ID }}
           VITE_CAMPAIGN_MONITOR_LIST_ID: ${{ secrets.VITE_CAMPAIGN_MONITOR_LIST_ID }}
+          VITE_DISABLE_SLACK: ${{ secrets.VITE_DISABLE_SLACK || 'false' }}
+          VITE_DISABLE_GEMINI: ${{ secrets.VITE_DISABLE_GEMINI || 'false' }}
+          VITE_DISABLE_CAMPAIGN_MONITOR: ${{ secrets.VITE_DISABLE_CAMPAIGN_MONITOR || 'false' }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

@@ -3,6 +3,11 @@ export const addToMailingList = async (email: string, firstName: string, lastNam
     const apiKey = import.meta.env.VITE_CAMPAIGN_MONITOR_API_KEY;
     const listId = import.meta.env.VITE_CAMPAIGN_MONITOR_LIST_ID;
 
+    if (import.meta.env.VITE_DISABLE_CAMPAIGN_MONITOR === 'true') {
+        console.info('Campaign Monitor subscription is disabled (VITE_DISABLE_CAMPAIGN_MONITOR=true). Skipping.');
+        return;
+    }
+
     if (!apiKey || !listId) {
         console.warn('Campaign Monitor credentials missing.');
         return;

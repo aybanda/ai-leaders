@@ -26,6 +26,11 @@ export interface OrientationData {
 export const sendNotification = async (data: NotificationData): Promise<boolean> => {
     const webhookUrl = import.meta.env.VITE_SLACK_WEBHOOK_URL;
 
+    if (import.meta.env.VITE_DISABLE_SLACK === 'true') {
+        console.info('Slack notifications are disabled (VITE_DISABLE_SLACK=true). Skipping.');
+        return true;
+    }
+
     if (!webhookUrl) {
         console.warn('Slack Webhook URL not configured (VITE_SLACK_WEBHOOK_URL)');
         return false;
@@ -135,6 +140,11 @@ export const sendNotification = async (data: NotificationData): Promise<boolean>
 export const sendOrientationSelection = async (data: OrientationData): Promise<boolean> => {
     const webhookUrl = import.meta.env.VITE_SLACK_WEBHOOK_URL;
 
+    if (import.meta.env.VITE_DISABLE_SLACK === 'true') {
+        console.info('Slack orientation notifications are disabled (VITE_DISABLE_SLACK=true). Skipping.');
+        return true;
+    }
+
     if (!webhookUrl) {
         console.warn('Slack Webhook URL not configured (VITE_SLACK_WEBHOOK_URL)');
         return false;
@@ -189,4 +199,3 @@ export const sendOrientationSelection = async (data: OrientationData): Promise<b
         return false;
     }
 };
-

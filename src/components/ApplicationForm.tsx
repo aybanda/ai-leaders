@@ -148,17 +148,17 @@ const ApplicationForm: React.FC = () => {
             return;
         }
 
+        // 4. Marketing Integration (First submission only)
+        // We do this immediately after valid form submission
+        if (stage === 0) {
+            addToMailingList(formData.email, formData.firstName, formData.lastName);
+        }
+
         setIsAnalyzing(true);
 
         try {
-            // 4. AI Analysis
+            // 5. AI Analysis
             const result = await analyzeApplication(formData.response);
-
-            // 5. Marketing Integration (First submission only)
-            if (stage === 0) {
-                // Fire and forget to not block UI
-                addToMailingList(formData.email, formData.firstName, formData.lastName);
-            }
 
             // Update scores and feedback from AI result
             const newScores = {
