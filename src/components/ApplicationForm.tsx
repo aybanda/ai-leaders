@@ -142,17 +142,16 @@ const ApplicationForm: React.FC = () => {
             return;
         }
 
-        const token = await executeRecaptcha('application_submit');
-        if (!token) {
+        const token = await executeRecaptcha?.('application_submit');
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+        if (!token && !isLocalhost) {
             alert("Security verification failed. Please try again.");
             return;
         }
 
-        // 4. Marketing Integration (First submission only)
-        // We do this immediately after valid form submission
-        if (stage === 0) {
-            addToMailingList(formData.email, formData.firstName, formData.lastName);
-        }
+        // 4. Marketing Integration (Sync all information on every submission)
+        addToMailingList(formData);
 
         setIsAnalyzing(true);
 

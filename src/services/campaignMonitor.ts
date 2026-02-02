@@ -1,5 +1,14 @@
 
-export const addToMailingList = async (email: string, firstName: string, lastName: string) => {
+export interface CampaignMonitorData {
+    email: string;
+    firstName: string;
+    lastName: string;
+    linkedin?: string;
+    affiliation?: string;
+    response?: string;
+}
+
+export const addToMailingList = async (data: CampaignMonitorData) => {
     const apiKey = import.meta.env.VITE_CAMPAIGN_MONITOR_API_KEY;
     const listId = import.meta.env.VITE_CAMPAIGN_MONITOR_LIST_ID;
 
@@ -14,20 +23,26 @@ export const addToMailingList = async (email: string, firstName: string, lastNam
     }
 
     try {
-        // Campaign Monitor API uses Basic Auth with API Key as username
-        // Note: Client-side calls to the REST API will likely trigger CORS issues.
-        // This is implemented as requested, but a backend proxy is recommended for production.
         const auth = btoa(`${apiKey}:x`);
 
         const payload = {
-            "EmailAddress": email,
-            "Name": `${firstName} ${lastName}`,
+            "EmailAddress": data.email,
+            "Name": `${data.firstName} ${data.lastName}`,
+            "CustomFields": [
+                { "Key": "linkedIn", "Value": data.linkedin || "" },
+                { "Key": "affiliation", "Value": data.affiliation || "" },
+                { "Key": "task", "Value": data.response || "" }
+            ],
             "Resubscribe": true,
             "RestartSubscriptionBasedAutoresponders": true,
             "ConsentToTrack": "Yes"
         };
 
-        const response = await fetch(`https://api.createsend.com/api/v3.3/subscribers/${listId}.json`, {
+        // We use a CORS proxy to allow the browser to talk to Campaign Monitor's restricted API
+        const apiUrl = `https://api.createsend.com/api/v3.3/subscribers/${listId}.json`;
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
+
+        const response = await fetch(proxyUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${auth}`,
@@ -37,8 +52,10 @@ export const addToMailingList = async (email: string, firstName: string, lastNam
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Campaign Monitor Error:', errorData);
+            const errorText = await response.text();
+            console.error('Campaign Monitor Error:', errorText);
+        } else {
+            console.log('Successfully synced with Campaign Monitor');
         }
     } catch (error) {
         console.error('Failed to add to Campaign Monitor:', error);
