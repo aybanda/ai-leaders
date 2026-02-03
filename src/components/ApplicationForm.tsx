@@ -5,7 +5,7 @@ import type { TransparencyStage } from './EvaluationDimensions';
 import EvaluationDimensions from './EvaluationDimensions';
 import { analyzeApplication } from '../services/ai';
 import { sendNotification, sendOrientationSelection } from '../services/notifications';
-import { addToMailingList } from '../services/campaignMonitor';
+import { syncToGoogleSheet } from '../services/googleSheets';
 
 
 const ApplicationForm: React.FC = () => {
@@ -151,7 +151,7 @@ const ApplicationForm: React.FC = () => {
         }
 
         // 4. Marketing Integration (Sync all information on every submission)
-        addToMailingList(formData);
+        syncToGoogleSheet(formData);
 
         setIsAnalyzing(true);
 
@@ -213,7 +213,7 @@ const ApplicationForm: React.FC = () => {
                     email: formData.email,
                     selection: orientationSelection
                 }),
-                addToMailingList({
+                syncToGoogleSheet({
                     ...formData,
                     orientation: orientationSelection
                 })

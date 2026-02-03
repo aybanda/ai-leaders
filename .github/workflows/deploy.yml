@@ -45,12 +45,10 @@ jobs:
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
           VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
           VITE_SLACK_WEBHOOK_URL: ${{ secrets.VITE_SLACK_WEBHOOK_URL }}
-          VITE_CAMPAIGN_MONITOR_API_KEY: ${{ secrets.VITE_CAMPAIGN_MONITOR_API_KEY }}
-          VITE_CAMPAIGN_MONITOR_CLIENT_ID: ${{ secrets.VITE_CAMPAIGN_MONITOR_CLIENT_ID }}
-          VITE_CAMPAIGN_MONITOR_LIST_ID: ${{ secrets.VITE_CAMPAIGN_MONITOR_LIST_ID }}
+          VITE_GOOGLE_SHEETS_WEBHOOK_URL: ${{ secrets.VITE_GOOGLE_SHEETS_WEBHOOK_URL }}
           VITE_DISABLE_SLACK: ${{ secrets.VITE_DISABLE_SLACK || 'false' }}
           VITE_DISABLE_GEMINI: ${{ secrets.VITE_DISABLE_GEMINI || 'false' }}
-          VITE_DISABLE_CAMPAIGN_MONITOR: ${{ secrets.VITE_DISABLE_CAMPAIGN_MONITOR || 'false' }}
+          VITE_DISABLE_GOOGLE_SHEETS: ${{ secrets.VITE_DISABLE_GOOGLE_SHEETS || 'false' }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
