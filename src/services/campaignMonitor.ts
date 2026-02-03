@@ -19,7 +19,7 @@ export const addToMailingList = async (data: CampaignMonitorData) => {
     }
 
     if (!apiKey || !listId) {
-        console.warn('Campaign Monitor credentials missing.');
+        console.warn('Campaign Monitor credentials missing. Please check your GitHub secrets and deploy workflow.');
         return;
     }
 
@@ -40,9 +40,11 @@ export const addToMailingList = async (data: CampaignMonitorData) => {
             "ConsentToTrack": "Yes"
         };
 
-        // We use a CORS proxy to allow the browser to talk to Campaign Monitor's restricted API
         const apiUrl = `https://api.createsend.com/api/v3.3/subscribers/${listId}.json`;
+        // Using a reliable CORS proxy
         const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
+
+        console.log(`Syncing ${data.email} to Campaign Monitor...`);
 
         const response = await fetch(proxyUrl, {
             method: 'POST',
@@ -55,11 +57,17 @@ export const addToMailingList = async (data: CampaignMonitorData) => {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Campaign Monitor Error:', errorText);
+            console.error(`Campaign Monitor API Error (${response.status}):`, errorText);
+
+            if (response.status === 401) {
+                console.warn('Unauthorized: Please double-check that your Campaign Monitor API Key is correct.');
+            } else if (response.status === 400) {
+                console.warn('Bad Request: One or more custom fields (linkedIn, affiliation, task, orientation) might not be configured in your list.');
+            }
         } else {
             console.log('Successfully synced with Campaign Monitor');
         }
     } catch (error) {
-        console.error('Failed to add to Campaign Monitor:', error);
+        console.error('Network error during Campaign Monitor sync:', error);
     }
 };
