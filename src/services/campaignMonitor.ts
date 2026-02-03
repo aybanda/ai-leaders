@@ -10,23 +10,22 @@ export interface CampaignMonitorData {
 }
 
 export const addToMailingList = async (data: CampaignMonitorData) => {
-    const apiKey = import.meta.env.VITE_CAMPAIGN_MONITOR_API_KEY;
-    const listId = import.meta.env.VITE_CAMPAIGN_MONITOR_LIST_ID;
+    // Trim credentials just in case there's accidental whitespace from GitHub Secrets
+    const apiKey = import.meta.env.VITE_CAMPAIGN_MONITOR_API_KEY?.trim();
+    const listId = import.meta.env.VITE_CAMPAIGN_MONITOR_LIST_ID?.trim();
 
     if (import.meta.env.VITE_DISABLE_CAMPAIGN_MONITOR === 'true') {
-        console.info('Campaign Monitor subscription is disabled (VITE_DISABLE_CAMPAIGN_MONITOR=true). Skipping.');
         return;
     }
 
     if (!apiKey || !listId) {
-        console.warn('Campaign Monitor credentials missing. Please check your GitHub secrets and deploy workflow.');
+        console.warn('[Campaign Monitor] Missing credentials. Check GitHub Secrets.');
         return;
     }
 
     try {
-        console.log(`[Campaign Monitor] Initializing sync for ${data.email}...`);
+        console.log(`[Campaign Monitor] Syncing ${data.email}...`);
 
-        // Ensure we're using string values for the Auth header
         const authHeader = btoa(`${apiKey}:x`);
 
         const payload = {
@@ -45,43 +44,45 @@ export const addToMailingList = async (data: CampaignMonitorData) => {
 
         const apiUrl = `https://api.createsend.com/api/v3.3/subscribers/${listId}.json`;
 
-        // Use a different proxy to see if it resolves the hang/CORS issue
-        // AllOrigins is generally very reliable for headers
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+        // Trying a different proxy that is often more reliable for POST requests with custom headers
+        const proxyUrl = `https://thingproxy.freeboard.io/fetch/${apiUrl}`;
 
-        console.log(`[Campaign Monitor] Sending request via proxy...`);
+        console.log(`[Campaign Monitor] Requesting via ThingProxy...`);
 
+        // We use a shorter timeout for this attempt
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-        const response = await fetch(proxyUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Basic ${authHeader}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload),
-            signal: controller.signal
-        });
+        try {
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${authHeader}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
 
-        clearTimeout(timeoutId);
-        console.log(`[Campaign Monitor] Response received with status: ${response.status}`);
+            clearTimeout(timeoutId);
+            console.log(`[Campaign Monitor] Received status: ${response.status}`);
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`[Campaign Monitor] API Error (${response.status}):`, errorText);
-
-            if (response.status === 401) {
-                console.warn('[Campaign Monitor] Unauthorized: Check if your API Key is correct in GitHub Secrets. (Note: It should be a 32-char hex string)');
+            if (!response.ok) {
+                const errorBody = await response.text();
+                console.error(`[Campaign Monitor] Error (${response.status}):`, errorBody);
+            } else {
+                console.log('[Campaign Monitor] Sync complete!');
             }
-        } else {
-            console.log('[Campaign Monitor] Successfully synced applicant data.');
+        } catch (fetchError: any) {
+            if (fetchError.name === 'AbortError') {
+                console.error('[Campaign Monitor] Timeout reached. The proxy might be down or blocked.');
+            } else {
+                throw fetchError;
+            }
         }
+
     } catch (error: any) {
-        if (error.name === 'AbortError') {
-            console.error('[Campaign Monitor] Request timed out. This may be a proxy or API connectivity issue.');
-        } else {
-            console.error('[Campaign Monitor] Unexpected Error:', error);
-        }
+        console.error('[Campaign Monitor] Critical Failure:', error.message || error);
     }
 };
