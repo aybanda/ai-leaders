@@ -249,6 +249,15 @@ const ApplicationForm: React.FC = () => {
                                 <>
                                     <p>We've confirmed your registration for the orientation on <span className="text-white font-bold">{orientationSelection}</span>.</p>
 
+                                    <div className="mt-6 p-5 bg-white/5 border border-white/10 rounded-2xl text-sm text-gray-300">
+                                        <p className="text-xs font-black uppercase tracking-widest text-gray-500 mb-3">What happens next</p>
+                                        <ul className="space-y-2">
+                                            <li>Check your email for your confirmation and calendar links.</li>
+                                            <li>Attend orientation to receive access to the Intro Micro-Credential.</li>
+                                            <li>Complete the Intro Micro-Credential to be considered for the paid Full Credential cohort in May.</li>
+                                        </ul>
+                                    </div>
+
                                     <div className="mt-10 p-6 bg-white/5 border border-white/10 rounded-2xl text-left">
                                         <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Your Zoom Link</h3>
                                         <div className="flex flex-col md:flex-row gap-4">
@@ -331,9 +340,14 @@ const ApplicationForm: React.FC = () => {
                             <p>
                                 Based on your responses, you've demonstrated the curiosity, persistence, and willingness to improve that defines an AI Leader. <strong>You are invited to register for an orientation.</strong>
                             </p>
-                            <p className="text-sm border-l-2 border-white/10 pl-6 text-gray-400 italic">
-                                Orientation participants will be introduced to our program and invited to start their learning journey. From the initial cohort, the 40 strongest participants will be invited to participate in the Full Credential to create a portfolio that leads to WordPress living-wage job placement. This Full Credential opportunity is paid and designed to help learners who have demonstrated commitment to a career in technology to efficiently demonstrate the skills they need to earn a living wage job. Participants who successfully complete the Full Credential will earn a $1,000 honorarium.
-                            </p>
+                            <div className="text-sm border border-white/10 bg-white/5 rounded-2xl p-6 text-gray-400">
+                                <p className="text-xs font-black uppercase tracking-widest text-gray-500 mb-3">What happens next</p>
+                                <ul className="space-y-2">
+                                    <li>Register for orientation and receive a confirmation email with calendar links.</li>
+                                    <li>Attend orientation to receive access to the Intro Micro-Credential.</li>
+                                    <li>Complete the Intro Micro-Credential to be considered for the paid Full Credential cohort beginning in May.</li>
+                                </ul>
+                            </div>
                         </div>
 
                         <form onSubmit={handleOrientationSubmit} className="space-y-8">
@@ -393,6 +407,9 @@ const ApplicationForm: React.FC = () => {
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed mb-10">
                         Apply for AI Leaders. The application system immediately informs you if you are a strong candidate. Strong candidates are invited to an orientation.
                     </p>
+                    <a href="#onboarding" className="text-xs uppercase tracking-[0.3em] text-gray-500 hover:text-white transition-colors">
+                        View onboarding steps
+                    </a>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
@@ -683,6 +700,16 @@ const ApplicationForm: React.FC = () => {
                         </div>
 
                         <EvaluationDimensions stage={stage} scores={scores} feedback={aiFeedback} />
+
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                            <p className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Onboarding Snapshot</p>
+                            <ul className="space-y-2 text-sm text-gray-300">
+                                <li>Apply and receive immediate feedback.</li>
+                                <li>Strong candidates register for March orientation.</li>
+                                <li>Orientation unlocks Intro Micro-Credential access.</li>
+                                <li>Completion leads to consideration for Full Credential in May.</li>
+                            </ul>
+                        </div>
 
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mt-10">
                             <p className="text-xs text-gray-400 leading-relaxed italic">

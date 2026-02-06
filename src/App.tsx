@@ -2,6 +2,7 @@
 import Layout from './components/Layout';
 import Hero from './components/Hero';
 import About from './components/About';
+import OnboardingProcess from './components/OnboardingProcess';
 import Partners from './components/Partners';
 import ApplicationForm from './components/ApplicationForm';
 import Advisors from './components/Advisors';
@@ -19,6 +20,7 @@ function App() {
         <Hero />
         <Partners />
         <About />
+        <OnboardingProcess />
         <Advisors />
         <OpenSourceCallout />
         <FAQ />

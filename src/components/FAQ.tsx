@@ -40,8 +40,8 @@ const FAQ: React.FC = () => {
                 <div className="space-y-4">
                     <p>Apply at AI-Leaders.org. The application system immediately informs you if you are a strong candidate.</p>
                     <p>Register for an Orientation. Strong candidates are invited to register for an AI Leaders orientation in March 2026.</p>
-                    <p>Attend an orientation. Orientation participants will be introduced to our program and invited to start their learning journey.</p>
-                    <p>From the initial cohort, the 40 strongest participants will be invited to participate in the Full Credential to create a portfolio that leads to WordPress living-wage job placement. This Full Credential opportunity is paid and designed to help learners who have demonstrated commitment to a career in technology to efficiently demonstrate the skills they need to earn a living wage job. Participants who successfully complete the Full Credential will earn a $1,000 honorarium.</p>
+                    <p>Attend an orientation and receive access to the Intro Micro-Credential.</p>
+                    <p>Participants who complete the Intro Micro-Credential are considered for the paid Full Credential cohort beginning in May. Full Credential completion earns a $1,000 honorarium and living-wage job placement with employer partners.</p>
                 </div>
             )
         },

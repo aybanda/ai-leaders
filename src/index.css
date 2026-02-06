@@ -17,3 +17,111 @@ body {
   background-color: #000000;
   color: #ffffff;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes border-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes rail-glow {
+  0% {
+    transform: translateX(-20%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.rail-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.rail-glow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 30%;
+  background: linear-gradient(90deg, rgba(16,185,129,0), rgba(16,185,129,0.7), rgba(99,102,241,0.7), rgba(99,102,241,0));
+  filter: blur(0.5px);
+  animation: rail-glow 5s linear infinite;
+}
+
+.animated-border {
+  position: relative;
+}
+
+.animated-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, rgba(59,130,246,0.7), rgba(16,185,129,0.7), rgba(168,85,247,0.7), rgba(59,130,246,0.7));
+  background-size: 200% 100%;
+  animation: border-flow 6s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+@keyframes spark-sweep {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.spark-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.spark-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.spark-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), rgba(99,102,241,0.9), transparent);
+  opacity: 0.6;
+  animation: spark-sweep 2.6s ease-in-out infinite;
+}
